@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FB Notification Access</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .fb-btn {
+            background-color: #1877F2;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .fb-btn:hover {
+            background-color: #166fe5;
+        }
+        p {
+            color: #606770;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>ফেসবুক ভেরিফিকেশন</h2>
+    <p>নিচের বাটনে ক্লিক করে সরাসরি ফেসবুক অ্যাপের অ্যাপ্রুভাল মেসেজ চেক করুন।</p>
+    
+    <button class="fb-btn" onclick="openFacebookNotification()">
+        ফেসবুক নোটিফিকেশন দেখুন
+    </button>
+</div>
+
+<script>
+    function openFacebookNotification() {
+        // ১. প্রথমে সরাসরি অ্যাপ্রুভাল পেজ খোলার চেষ্টা করবে
+        const approvalLink = "fb://approve_from_another_device/open";
+        // ২. যদি সেটি না পাওয়া যায়, তবে সাধারণ নোটিফিকেশন ট্যাব খুলবে
+        const notificationLink = "fb://notifications";
+
+        // অ্যাপ ওপেন করার চেষ্টা
+        window.location.href = approvalLink;
+
+        // যদি ২ সেকেন্ডের মধ্যে অ্যাপ্রুভাল পেজ না আসে, তবে নোটিফিকেশন ট্যাবে রিডাইরেক্ট করবে
+        setTimeout(function() {
+            window.location.href = notificationLink;
+        }, 2000);
+    }
+</script>
+
+</body>
+</html>
